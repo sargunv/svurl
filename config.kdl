@@ -1,0 +1,45 @@
+command "google" "g" default=true {
+    rules {
+        noargs "https://google.com"
+        freeform "https://google.com/search?q={0}"
+    }
+
+    tests {
+        accept "g" "https://google.com"
+        accept "g hello world" "https://google.com/search?q=hello%20world"
+        accept "hello world" "https://google.com/search?q=hello%20world"
+    }
+}
+
+command "twitter" "tw" {
+    rules {
+        regex "https://twitter.com{/1}" "^@([A-Za-z0-9_]+)$"
+        noargs "https://twitter.com"
+        freeform "https://twitter.com/search?q={0}"
+    }
+
+    tests {
+        accept "tw" "https://twitter.com"
+        accept "tw @sargunv" "https://twitter.com/sargunv"
+        accept "tw sargun vohra" "https://twitter.com/search?q=sargun%20vohra"
+    }
+}
+
+command "github" "gh" {
+    rules {
+        regex "https://github.com{/owner}{/repo}" \
+            "^(?P<owner>[-a-zA-Z0-9]+)/(?P<repo>[-a-zA-Z0-9]+)?$"
+        regex "https://github.com{/owner}{/repo}/issues{/issue}" \
+            "^(?P<owner>[-a-zA-Z0-9]+)/(?P<repo>[-a-zA-Z0-9]+)#(?P<issue>[0-9]+)$"
+        noargs "https://github.com"
+        freeform "https://github.com/search?q={0}"
+    }
+
+    tests {
+        accept "gh" "https://github.com"
+        accept "gh sargunv" "https://github.com/search?q=sargunv"
+        accept "gh sargunv/" "https://github.com/sargunv"
+        accept "gh sargunv/modsman" "https://github.com/sargunv/modsman"
+        accept "gh sargunv/modsman#1" "https://github.com/sargunv/modsman/issues/1"
+    }
+}
