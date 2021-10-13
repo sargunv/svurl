@@ -1,8 +1,10 @@
 [Unit]
 Description=Svurl Service
+After=network-online.target
 
 [Service]
-ExecStart=ROCKET_PORT=8000 /usr/bin/svurl-service
+Environment="ROCKET_ADDRESS=0.0.0.0"
+ExecStart=/usr/bin/svurl-service
 Restart=always
 
 [Install]

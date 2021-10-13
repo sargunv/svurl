@@ -20,3 +20,10 @@ sudo apt update && sudo apt install svurl-service
 ```
 
 Alternatively, download the `.deb` package for your system from [Github Releases](https://github.com/sargunv/svurl-service/releases/latest) and install it with `dpkg`.
+
+To override settings like the port, run `sudo systemctl edit svurl-service`, set [applicable environment variables](https://rocket.rs/v0.4/guide/configuration/#environment-variables), and run `sudo systemctl restart svurl-service`. For example:
+
+```
+[Service]
+Environment="ROCKET_PORT=10002"
+```
