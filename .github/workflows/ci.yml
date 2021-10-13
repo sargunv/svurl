@@ -64,22 +64,23 @@ jobs:
       - uses: thebongy/version-check@v1
         with:
           file: Cargo.toml
-          tagFormat: v${version}
           failBuild: false
         id: version_check
       - uses: actions/download-artifact@v2
-        if: ${{ steps.version_check.outputs.versionChanged }}
+        # if: ${{ steps.version_check.outputs.versionChanged }}
+        with:
+          path: _artifacts
       - uses: ncipollo/release-action@v1.8.10
-        if: ${{ steps.version_check.outputs.versionChanged }}
+        # if: ${{ steps.version_check.outputs.versionChanged }}
         with:
           allowUpdates: true
-          artifacts: ./target/*/debian/*.deb
+          artifacts: _artifacts/*/*.deb
           tag: ${{ steps.version_check.outputs.rawVersion }}
           token: ${{ secrets.GITHUB_TOKEN }}
           commit: ${{ github.sha }}
       - uses: lpenz/ghaction-packagecloud@v0.3
-        if: ${{ steps.version_check.outputs.versionChanged }}
+        # if: ${{ steps.version_check.outputs.versionChanged }}
         with:
-          repository: sargunv/any/any
+          repository: public/any/any
         env:
           PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
