@@ -21,3 +21,6 @@ uritemplate-next = "0.2.0"
 
 [dev-dependencies]
 cargo-deb = "1.32.0"
+
+[package.metadata.deb]
+extended-description = "Backend endpoint for a CLI-style bookmark and shortlinking service, similar to http://www.bunny1.org/."
