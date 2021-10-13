@@ -1,6 +1,6 @@
 [package]
 name = "svurl-service"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2018"
 
 authors = ["Sargun Vohra <sargun.vohra@gmail.com>"]
@@ -23,4 +23,11 @@ uritemplate-next = "0.2.0"
 cargo-deb = "1.32.0"
 
 [package.metadata.deb]
+maintainer-scripts = "debian/"
 extended-description = "Backend endpoint for a CLI-style bookmark and shortlinking service, similar to http://www.bunny1.org/."
+
+[package.metadata.deb.systemd-units]
+enable = true
+start = true
+restart-after-upgrade = true
+stop-on-upgrade = true

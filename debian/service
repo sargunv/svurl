@@ -1,0 +1,9 @@
+[Unit]
+Description=Svurl Service
+
+[Service]
+ExecStart=ROCKET_PORT=8000 /usr/bin/svurl-service
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
