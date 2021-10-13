@@ -67,11 +67,11 @@ jobs:
           failBuild: false
         id: version_check
       - uses: actions/download-artifact@v2
-        # if: ${{ steps.version_check.outputs.versionChanged }}
+        if: ${{ steps.version_check.outputs.versionChanged }}
         with:
           path: _artifacts
       - uses: ncipollo/release-action@v1.8.10
-        # if: ${{ steps.version_check.outputs.versionChanged }}
+        if: ${{ steps.version_check.outputs.versionChanged }}
         with:
           allowUpdates: true
           artifacts: _artifacts/*/*.deb
@@ -79,7 +79,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit: ${{ github.sha }}
       - uses: lpenz/ghaction-packagecloud@v0.3
-        # if: ${{ steps.version_check.outputs.versionChanged }}
+        if: ${{ steps.version_check.outputs.versionChanged }}
         with:
           repository: public/any/any
         env:
