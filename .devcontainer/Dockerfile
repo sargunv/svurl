@@ -6,10 +6,8 @@ USER root
 
 RUN apt-get update \
     && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends tldr gcc-arm-linux-gnueabihf
+    && apt-get -y install --no-install-recommends tldr
 
-RUN cargo install bat ripgrep cargo-deb
+RUN cargo install bat ripgrep
 
 USER codespace
-
-RUN rustup target add armv7-unknown-linux-gnueabihf

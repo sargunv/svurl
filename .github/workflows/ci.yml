@@ -13,11 +13,11 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: Swatinem/rust-cache@v1
-      with:
-        cache-on-failure: true
-    - run: cargo test
+      - uses: actions/checkout@v2
+      - uses: Swatinem/rust-cache@v1
+        with:
+          cache-on-failure: true
+      - run: cargo test
 
   build-debian:
     needs: [ check ]
@@ -36,21 +36,50 @@ jobs:
             apt-install: gcc-arm-linux-gnueabihf
     runs-on: ${{ matrix.runs-on }}
     steps:
-    - uses: actions/checkout@v2
-    - run: sudo apt-get update && sudo apt-get install -y ${{ matrix.apt-install }}
-      if: ${{ matrix.apt-install }}
-    - uses: Swatinem/rust-cache@v1
-      with:
-        cache-on-failure: true
-        key: ${{ matrix.target }}
-    - uses: actions-rs/toolchain@v1
-      with:
-        toolchain: ${{ matrix.toolchain }}
-        target: ${{ matrix.target }}
-    - run: cargo install cargo-deb
-    - run: cargo deb --target ${{ matrix.target }}
-    - uses: actions/upload-artifact@v2
-      with:
-        name: ${{ matrix.artifact }}
-        path: ./target/${{ matrix.target }}/debian/*.deb
-        if-no-files-found: error
+      - uses: actions/checkout@v2
+      - run: sudo apt-get update && sudo apt-get install -y ${{ matrix.apt-install }}
+        if: ${{ matrix.apt-install }}
+      - uses: Swatinem/rust-cache@v1
+        with:
+          cache-on-failure: true
+          key: ${{ matrix.target }}
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.toolchain }}
+          target: ${{ matrix.target }}
+      - run: cargo install cargo-deb
+      - run: cargo deb --target ${{ matrix.target }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.artifact }}
+          path: ./target/${{ matrix.target }}/debian/*.deb
+          if-no-files-found: error
+  
+  release:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    needs: [ build-debian ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: thebongy/version-check@v1
+        with:
+          file: Cargo.toml
+          tagFormat: v${version}
+          failBuild: false
+        id: version_check
+      - uses: actions/download-artifact@v2
+        if: ${{ steps.version_check.outputs.versionChanged }}
+      - uses: ncipollo/release-action@v1.8.10
+        if: ${{ steps.version_check.outputs.versionChanged }}
+        with:
+          allowUpdates: true
+          artifacts: ./target/*/debian/*.deb
+          tag: ${{ steps.version_check.outputs.rawVersion }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit: ${{ github.sha }}
+      - uses: lpenz/ghaction-packagecloud@v0.3
+        if: ${{ steps.version_check.outputs.versionChanged }}
+        with:
+          repository: sargunv/any/any
+        env:
+          PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
