@@ -3,6 +3,13 @@ name = "svurl-service"
 version = "0.1.0"
 edition = "2018"
 
+authors = ["Sargun Vohra <sargun.vohra@gmail.com>"]
+description = "Personal shortlinking and CLI-style bookmarks backend"
+readme = "README.md"
+homepage = "https://svurl.co/"
+repository = "https://github.com/sargunv/svurl-service.git"
+license = "Apache-2.0"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
@@ -11,3 +18,6 @@ percent-encoding = "2.1.0"
 regex = "1.5.4"
 rocket = "0.5.0-rc.1"
 uritemplate-next = "0.2.0"
+
+[dev-dependencies]
+cargo-deb = "1.32.0"
