@@ -59,27 +59,25 @@ jobs:
     if: ${{ github.ref == 'refs/heads/main' }}
     needs: [ build-debian ]
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v2
       - uses: thebongy/version-check@v1
         with:
           file: Cargo.toml
-          failBuild: false
+          failBuild: true
         id: version_check
       - uses: actions/download-artifact@v2
-        if: ${{ steps.version_check.outputs.versionChanged }}
         with:
           path: _artifacts
       - uses: ncipollo/release-action@v1.8.10
-        if: ${{ steps.version_check.outputs.versionChanged }}
         with:
-          allowUpdates: true
+          allowUpdates: false
           artifacts: _artifacts/*/*.deb
           tag: ${{ steps.version_check.outputs.rawVersion }}
           token: ${{ secrets.GITHUB_TOKEN }}
           commit: ${{ github.sha }}
       - uses: lpenz/ghaction-packagecloud@v0.3
-        if: ${{ steps.version_check.outputs.versionChanged }}
         with:
           repository: public/any/any
         env:
