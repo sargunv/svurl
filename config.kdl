@@ -23,11 +23,11 @@ command "github" "gh" {
         regex "https://github.com/marketplace?query={2}&type={1}" \
             "^--(apps|actions)\\s+(.*)$"
 
-        // open a specific github user or repo ("gh sargunv/svurl-service")
+        // open a specific github user or repo ("gh sargunv/svurl")
         regex "https://github.com{/owner}{/repo}" \
             "^(?P<owner>[-a-zA-Z0-9]+)/(?P<repo>[-a-zA-Z0-9]+)?$"
 
-        // open a specific github issue (gh sargunv/svurl-service#123")
+        // open a specific github issue (gh sargunv/svurl#123")
         regex "https://github.com{/owner}{/repo}/issues{/issue}" \
             "^(?P<owner>[-a-zA-Z0-9]+)/(?P<repo>[-a-zA-Z0-9]+)#(?P<issue>[0-9]+)$"
         noargs "https://github.com"
@@ -40,8 +40,8 @@ command "github" "gh" {
         accept "gh --actions upload artifact" "https://github.com/marketplace?query=upload%20artifact&type=actions"
         accept "gh --apps gitpod" "https://github.com/marketplace?query=gitpod&type=apps"
         accept "gh sargunv/" "https://github.com/sargunv"
-        accept "gh sargunv/svurl-service" "https://github.com/sargunv/svurl-service"
-        accept "gh sargunv/svurl-service#123" "https://github.com/sargunv/svurl-service/issues/123"
+        accept "gh sargunv/svurl" "https://github.com/sargunv/svurl"
+        accept "gh sargunv/svurl#1" "https://github.com/sargunv/svurl/issues/1"
     }
 }
 

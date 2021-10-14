@@ -1,13 +1,13 @@
 [package]
-name = "svurl-service"
+name = "svurl-resolver"
 version = "0.1.0"
 edition = "2018"
 
 authors = ["Sargun Vohra <sargun.vohra@gmail.com>"]
-description = "Personal shortlinking and CLI-style bookmarks backend"
+description = "Personal CLI-style bookmarks backend"
 readme = "README.md"
 homepage = "https://svurl.co/"
-repository = "https://github.com/sargunv/svurl-service.git"
+repository = "https://github.com/sargunv/svurl.git"
 license = "Apache-2.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -23,7 +23,7 @@ cargo-deb = "1.32.0"
 
 [package.metadata.deb]
 maintainer-scripts = "debian/"
-extended-description = "Backend endpoint for a CLI-style bookmark and shortlinking service, similar to http://www.bunny1.org/."
+extended-description = "Backend endpoint for a CLI-style bookmarks service, similar to http://www.bunny1.org/."
 
 [package.metadata.deb.systemd-units]
 enable = true
