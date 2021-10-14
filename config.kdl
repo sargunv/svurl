@@ -1,34 +1,33 @@
-command "google" "g" default=true {
-    rules {
-        noargs "https://google.com"
-        freeform "https://google.com/search?q={0}"
-    }
-
-    tests {
-        accept "g" "https://google.com"
-        accept "g hello world" "https://google.com/search?q=hello%20world"
-        accept "hello world" "https://google.com/search?q=hello%20world"
-    }
-}
-
 command "twitter" "tw" {
     rules {
+        // match a username arg like "tw @sargunv0" and resolve to that twitter profile page
         regex "https://twitter.com{/1}" "^@([A-Za-z0-9_]+)$"
+
+        // match empty args (just "tw") and resolve to the twitter home page
         noargs "https://twitter.com"
+
+        // match any args ("tw hello world") and resolve to search twitter for that query
         freeform "https://twitter.com/search?q={0}"
     }
 
     tests {
         accept "tw" "https://twitter.com"
-        accept "tw @sargunv" "https://twitter.com/sargunv"
-        accept "tw sargun vohra" "https://twitter.com/search?q=sargun%20vohra"
+        accept "tw @sargunv0" "https://twitter.com/sargunv0"
+        accept "tw hello world" "https://twitter.com/search?q=hello%20world"
     }
 }
 
 command "github" "gh" {
     rules {
+        // search github for apps or actions ("gh --actions upload artifact")
+        regex "https://github.com/marketplace?query={2}&type={1}" \
+            "^--(apps|actions)\\s+(.*)$"
+
+        // open a specific github user or repo ("gh sargunv/svurl-service")
         regex "https://github.com{/owner}{/repo}" \
             "^(?P<owner>[-a-zA-Z0-9]+)/(?P<repo>[-a-zA-Z0-9]+)?$"
+
+        // open a specific github issue (gh sargunv/svurl-service#123")
         regex "https://github.com{/owner}{/repo}/issues{/issue}" \
             "^(?P<owner>[-a-zA-Z0-9]+)/(?P<repo>[-a-zA-Z0-9]+)#(?P<issue>[0-9]+)$"
         noargs "https://github.com"
@@ -38,8 +37,22 @@ command "github" "gh" {
     tests {
         accept "gh" "https://github.com"
         accept "gh sargunv" "https://github.com/search?q=sargunv"
+        accept "gh --actions upload artifact" "https://github.com/marketplace?query=upload%20artifact&type=actions"
+        accept "gh --apps gitpod" "https://github.com/marketplace?query=gitpod&type=apps"
         accept "gh sargunv/" "https://github.com/sargunv"
-        accept "gh sargunv/modsman" "https://github.com/sargunv/modsman"
-        accept "gh sargunv/modsman#1" "https://github.com/sargunv/modsman/issues/1"
+        accept "gh sargunv/svurl-service" "https://github.com/sargunv/svurl-service"
+        accept "gh sargunv/svurl-service#123" "https://github.com/sargunv/svurl-service/issues/123"
+    }
+}
+
+// fall back to DuckDuckGo's bangs for a large set of basic search commands: https://duckduckgo.com/bang
+command default=true {
+    rules {
+        // %21 is a bang character ("!")
+        freeform "https://duckduckgo.com/?q=%21{0}"
+    }
+
+    tests {
+        accept "ytm al'naito" "https://duckduckgo.com/?q=%21ytm%20al%27naito"
     }
 }

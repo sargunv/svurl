@@ -136,23 +136,23 @@ impl TryFrom<KdlNode> for CommandNode {
             return Err("expected 'command' node but found something else".to_string());
         }
 
-        let names = node
-            .values
-            .into_iter()
-            .map(String::try_from)
-            .collect::<Result<Vec<_>, _>>()
-            .map_err(|err| err.to_string())?;
-
-        if names.is_empty() {
-            return Err("command node must have at least one name".to_string());
-        }
-
         let is_default = node
             .properties
             .get("default")
             .map(bool::try_from)
             .unwrap_or(Ok(false))
             .map_err(|err| err.to_string())?;
+
+        let names = node
+            .values
+            .into_iter()
+            .map(|val| String::try_from(val).map(|name| name.to_lowercase()))
+            .collect::<Result<Vec<_>, _>>()
+            .map_err(|err| err.to_string())?;
+
+        if !is_default && names.is_empty() {
+            return Err("non-default command must have at least one name".to_string());
+        }
 
         let mut rules = Vec::new();
         let mut tests = Vec::new();

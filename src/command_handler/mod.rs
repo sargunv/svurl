@@ -6,6 +6,7 @@ use crate::config::CommandNode;
 
 use super::config;
 
+#[derive(Debug)]
 pub struct CommandHandler {
     command_map: HashMap<String, CommandNode>,
     default_command: Option<CommandNode>,
@@ -21,9 +22,9 @@ impl CommandHandler {
         for command in config.commands.iter() {
             for name in command.names.iter() {
                 ret.command_map.insert(name.to_string(), command.to_owned());
-                if command.is_default {
-                    ret.default_command = Some(command.to_owned());
-                }
+            }
+            if command.is_default {
+                ret.default_command = Some(command.to_owned());
             }
         }
 
@@ -32,10 +33,10 @@ impl CommandHandler {
 
     fn handle_strict(&self, input: &str) -> Option<String> {
         let mut split = input.splitn(2, char::is_whitespace);
-        let name = split.next().unwrap_or("");
+        let name = split.next().unwrap_or("").to_lowercase();
         let arg = split.next().unwrap_or("").trim_start();
 
-        let command = self.command_map.get(name)?;
+        let command = self.command_map.get(&name)?;
         handle_command(command, arg)
     }
 
